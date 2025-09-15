@@ -1,10 +1,12 @@
 server:
-  port: 8080
+  port: 8083
 spring:
   application:
     name: "reportes"
   devtools:
     add-properties: false
+  webflux:
+    base-path: "/api"
   h2:
     console:
       enabled: true
@@ -16,9 +18,9 @@ aws:
     endpoint: "http://localhost:8000"
 entrypoint:
   sqs:
-    region: "us-east-1"
-    endpoint: "http://localhost:4566"
-    queueUrl: "http://localhost:4566/000000000000/sample"
+    region: "us-east-2"
+    endpoint: "https://sqs.us-east-2.amazonaws.com"
+    queueUrl: "https://sqs.us-east-2.amazonaws.com/096212910572/Respuesta"
     waitTimeSeconds: 20
     maxNumberOfMessages: 10
     visibilityTimeoutSeconds: 10
