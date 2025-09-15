@@ -21,7 +21,7 @@ public abstract class TemplateAdapterOperations<E, K, V> {
     private final Class<V> dataClass;
     private final Function<V, E> toEntityFn;
     protected ObjectMapper mapper;
-    private final DynamoDbAsyncTable<V> table;
+    protected DynamoDbAsyncTable<V> table;
     private final DynamoDbAsyncIndex<V> tableByIndex;
 
     @SuppressWarnings("unchecked")
@@ -46,7 +46,7 @@ public abstract class TemplateAdapterOperations<E, K, V> {
         return Mono.fromFuture(table.getItem(Key.builder()
                         .partitionValue(AttributeValue.builder().s((String) id).build())
                         .build()))
-                .map(this::toModel);
+                .map(res -> toModel(res));
     }
 
     public Mono<E> delete(E model) {
@@ -65,13 +65,6 @@ public abstract class TemplateAdapterOperations<E, K, V> {
         return listOfModel(pagePublisher);
     }
 
-    /**
-     * @return Mono<List < E>>
-     * @implNote Bancolombia does not suggest the Scan function for DynamoDB tables due to the low performance resulting
-     * from the design of the database engine (Key value). Optimize the query using Query, GetItem or BatchGetItem
-     * functions, and if necessary, consider the Single-Table Design pattern for DynamoDB.
-     * @deprecated
-     */
     @Deprecated(forRemoval = true)
     public Mono<List<E>> scan() {
         PagePublisher<V> pagePublisher = table.scan();

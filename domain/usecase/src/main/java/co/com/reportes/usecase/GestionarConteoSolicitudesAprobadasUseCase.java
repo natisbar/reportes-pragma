@@ -9,13 +9,12 @@ import reactor.core.publisher.Mono;
 @AllArgsConstructor
 public class GestionarConteoSolicitudesAprobadasUseCase {
 
-//    private final SolicitudPrestamoGateway solicitudPrestamoGateway;
+    private final SolicitudPrestamoGateway solicitudPrestamoGateway;
 
     public Mono<Void> ejecutar(SolicitudPrestamo solicitudPrestamo){
         return Mono.just(solicitudPrestamo)
                 .filter(solicitud -> Estado.APROBADO.equals(solicitudPrestamo.getEstado()))
-//                .flatMap(solicitud -> solicitudPrestamoGateway.agregarCantidadYMontoPrestamoAprobado(solicitudPrestamo.getMonto()))
-                .doOnSuccess(System.out::println)
+                .flatMap(solicitud -> solicitudPrestamoGateway.agregarCantidadYMontoPrestamoAprobado(solicitudPrestamo.getMonto()))
                 .then();
     }
 }

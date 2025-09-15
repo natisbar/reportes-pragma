@@ -4,6 +4,7 @@ import co.com.reportes.sqs.listener.mapper.PrestamoSolicitudMapper;
 import co.com.reportes.sqs.listener.model.SolicitudPrestamoDto;
 import co.com.reportes.usecase.GestionarConteoSolicitudesAprobadasUseCase;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,15 +22,16 @@ public class SQSProcessor implements Function<Message, Mono<Void>> {
 
     @Override
     public Mono<Void> apply(Message message) {
-        System.out.println(message.body());
         return Mono.just(message.body())
                 .map(this::convertirStringASolicitud)
                 .map(mapper::convertirDesde)
                 .flatMap(gestionarConteoSolicitudesAprobadasUseCase::ejecutar);
     }
 
-    private SolicitudPrestamoDto convertirStringASolicitud(String solicitudString){
+    private SolicitudPrestamoDto convertirStringASolicitud(String mensaje){
         try {
+            JsonNode envelope = objectMapper.readTree(mensaje);
+            String solicitudString = envelope.get("Message").asText();
             return objectMapper.readValue(solicitudString, SolicitudPrestamoDto.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

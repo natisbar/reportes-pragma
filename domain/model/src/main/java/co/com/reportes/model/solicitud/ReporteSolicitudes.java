@@ -8,7 +8,7 @@ import lombok.*;
 @Setter
 @Builder(toBuilder = true)
 public class ReporteSolicitudes {
-    private String idReporte;
+    private String id;
     private Long contador;
     private Long monto;
 }
