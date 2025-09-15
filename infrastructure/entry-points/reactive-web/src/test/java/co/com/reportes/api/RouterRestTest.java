@@ -71,7 +71,7 @@ class RouterRestTest {
                 .expectBody(ReporteSolicitudesDto.class)
                 .value(reporteDto -> {
                             Assertions.assertThat(reporteDto.getContador()).isEqualTo(dto.getContador());
-                            Assertions.assertThat(reporteDto.getMonto().compareTo(dto.getMonto())).isZero();
+                            Assertions.assertThat(reporteDto.getMonto()).isEqualByComparingTo(dto.getMonto());
                         }
                 );
     }

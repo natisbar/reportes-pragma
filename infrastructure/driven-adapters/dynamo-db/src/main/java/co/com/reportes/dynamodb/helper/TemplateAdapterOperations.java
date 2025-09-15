@@ -13,20 +13,17 @@ public abstract class TemplateAdapterOperations<E, K, V> {
     private final Function<V, E> toEntityFn;
     protected ObjectMapper mapper;
     protected DynamoDbAsyncTable<V> table;
-    private final DynamoDbAsyncIndex<V> tableByIndex;
 
     @SuppressWarnings("unchecked")
     protected TemplateAdapterOperations(DynamoDbEnhancedAsyncClient dynamoDbEnhancedAsyncClient,
                                         ObjectMapper mapper,
                                         Function<V, E> toEntityFn,
-                                        String tableName,
-                                        String... index) {
+                                        String tableName) {
         this.toEntityFn = toEntityFn;
         this.mapper = mapper;
         ParameterizedType genericSuperclass = (ParameterizedType) this.getClass().getGenericSuperclass();
         this.dataClass = (Class<V>) genericSuperclass.getActualTypeArguments()[2];
         table = dynamoDbEnhancedAsyncClient.table(tableName, TableSchema.fromBean(dataClass));
-        tableByIndex = index.length > 0 ? table.index(index[0]) : null;
     }
 
     public Mono<E> save(E model) {
