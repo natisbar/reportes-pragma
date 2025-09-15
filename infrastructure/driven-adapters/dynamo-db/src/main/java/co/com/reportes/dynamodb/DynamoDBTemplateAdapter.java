@@ -34,7 +34,12 @@ public class DynamoDBTemplateAdapter extends TemplateAdapterOperations<ReporteSo
     @Override
     public Mono<Void> agregarCantidadYMontoPrestamoAprobado(BigDecimal valor) {
       return agregarPrestamoYMonto(valor)
-              .doOnSuccess(attributes -> log.info("Cantidad y monto actualizado"));
+              .doOnSuccess(attributes -> log.info("Cantidad y monto actualizado"))
+//              .onErrorResume(throwable -> {
+//                    log.error("Error al actualizar la cantidad y monto: {}", throwable.getMessage());
+//                    return Mono.empty();
+//              })
+              ;
     }
 
     @Override

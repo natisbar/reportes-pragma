@@ -16,6 +16,7 @@ spring:
 aws:
   dynamodb:
     endpoint: "${DYNAMO_DB_ENDPOINT:http://localhost:8000}"
+  region: "${DYNAMO_DB_REGION:us-east-2}"
 entrypoint:
   sqs:
     region: "${SQS_REGION:us-east-2}"

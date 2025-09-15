@@ -2,19 +2,10 @@ package co.com.reportes.dynamodb.helper;
 
 import org.reactivecommons.utils.ObjectMapper;
 import reactor.core.publisher.Mono;
-import software.amazon.awssdk.core.async.SdkPublisher;
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbAsyncIndex;
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbAsyncTable;
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedAsyncClient;
-import software.amazon.awssdk.enhanced.dynamodb.Key;
-import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
-import software.amazon.awssdk.enhanced.dynamodb.model.Page;
-import software.amazon.awssdk.enhanced.dynamodb.model.PagePublisher;
-import software.amazon.awssdk.enhanced.dynamodb.model.QueryEnhancedRequest;
+import software.amazon.awssdk.enhanced.dynamodb.*;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 import java.lang.reflect.ParameterizedType;
-import java.util.List;
 import java.util.function.Function;
 
 public abstract class TemplateAdapterOperations<E, K, V> {
