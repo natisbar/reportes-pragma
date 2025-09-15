@@ -36,3 +36,8 @@ management:
         enabled: true
 cors:
   allowed-origins: "http://localhost:4200,http://localhost:8080"
+
+security:
+  jwt:
+    secretkey: "${JWT_SECRET_KEY:Bardelhaus1234567890Bardelhaus1234567890$}"
+

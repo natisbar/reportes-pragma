@@ -1,4 +1,4 @@
-package co.com.reportes.api.config;
+package co.com.reportes.api.seguridad.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

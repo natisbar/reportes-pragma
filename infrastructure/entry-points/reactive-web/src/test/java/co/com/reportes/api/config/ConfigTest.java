@@ -2,6 +2,8 @@ package co.com.reportes.api.config;
 
 import co.com.reportes.api.Handler;
 import co.com.reportes.api.RouterRest;
+import co.com.reportes.api.seguridad.config.CorsConfig;
+import co.com.reportes.api.seguridad.config.SecurityHeadersConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;

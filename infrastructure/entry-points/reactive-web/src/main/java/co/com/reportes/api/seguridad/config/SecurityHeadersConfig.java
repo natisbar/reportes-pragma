@@ -1,4 +1,4 @@
-package co.com.reportes.api.config;
+package co.com.reportes.api.seguridad.config;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;

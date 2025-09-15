@@ -2,6 +2,9 @@ package co.com.reportes.sqs.listener.helper;
 
 import co.com.reportes.sqs.listener.SQSProcessor;
 import co.com.reportes.sqs.listener.config.SQSProperties;
+import co.com.reportes.sqs.listener.mapper.PrestamoSolicitudMapper;
+import co.com.reportes.usecase.GestionarConteoSolicitudesAprobadasUseCase;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -29,19 +32,18 @@ class SQSListenerTest {
     @Mock
     private SQSProperties sqsProperties;
 
+    @Mock
+    private GestionarConteoSolicitudesAprobadasUseCase gestionarConteoSolicitudesAprobadasUseCase;
+
+    @Mock
+    private PrestamoSolicitudMapper mapper;
+
+    @Mock
+    private ObjectMapper objectMapper;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-
-        var sqsProperties = new SQSProperties(
-                "us-east-1",
-                "http://localhost:4566",
-                "http://localhost:4566/00000000000/queueName",
-                20,
-                30,
-                10,
-                1
-        );
 
         var message = Message.builder().body("message").build();
         var deleteMessageResponse = DeleteMessageResponse.builder().build();
@@ -58,7 +60,7 @@ class SQSListenerTest {
         var sqsListener = SQSListener.builder()
                 .client(asyncClient)
                 .properties(sqsProperties)
-                .processor(new SQSProcessor())
+                .processor(new SQSProcessor(gestionarConteoSolicitudesAprobadasUseCase, mapper, objectMapper))
                 .operation("operation")
                 .build();
 
