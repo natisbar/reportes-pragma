@@ -15,12 +15,12 @@ spring:
     active: "${SPRING_PROFILE:local}"
 aws:
   dynamodb:
-    endpoint: "http://localhost:8000"
+    endpoint: "${DYNAMO_DB_ENDPOINT:http://localhost:8000}"
 entrypoint:
   sqs:
-    region: "us-east-2"
-    endpoint: "https://sqs.us-east-2.amazonaws.com"
-    queueUrl: "https://sqs.us-east-2.amazonaws.com/096212910572/Respuesta"
+    region: "${SQS_REGION:us-east-2}"
+    endpoint: "${SQS_ENDPOINT:https://sqs.us-east-2.amazonaws.com}"
+    queueUrl: "${SQS_LISTENER_RESPUESTA_ENDPOINT:https://sqs.us-east-2.amazonaws.com/096212910572/Respuesta}"
     waitTimeSeconds: 20
     maxNumberOfMessages: 10
     visibilityTimeoutSeconds: 10
