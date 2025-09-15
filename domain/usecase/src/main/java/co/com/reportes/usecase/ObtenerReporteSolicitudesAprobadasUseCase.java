@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 public class ObtenerReporteSolicitudesAprobadasUseCase {
 
     private final SolicitudPrestamoGateway solicitudPrestamoGateway;
-    private static final String ID_REPORTE = "total_solicitudes_aprobadas";
+    public static final String ID_REPORTE = "total_solicitudes_aprobadas";
 
     public Mono<ReporteSolicitudes> ejecutar(){
         return solicitudPrestamoGateway.obtenerReporteAprobadosPorId(ID_REPORTE);

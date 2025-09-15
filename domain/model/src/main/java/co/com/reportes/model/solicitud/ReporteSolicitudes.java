@@ -2,6 +2,8 @@ package co.com.reportes.model.solicitud;
 
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -10,5 +12,5 @@ import lombok.*;
 public class ReporteSolicitudes {
     private String id;
     private Long contador;
-    private Long monto;
+    private BigDecimal monto;
 }

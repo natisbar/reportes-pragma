@@ -1,11 +1,13 @@
 package co.com.reportes.config;
 
+import co.com.reportes.model.solicitud.gateway.SolicitudPrestamoGateway;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
 public class UseCasesConfigTest {
 
@@ -31,14 +33,9 @@ public class UseCasesConfigTest {
     static class TestConfig {
 
         @Bean
-        public MyUseCase myUseCase() {
-            return new MyUseCase();
+        public SolicitudPrestamoGateway solicitudPrestamoGateway() {
+            return mock(SolicitudPrestamoGateway.class);
         }
     }
 
-    static class MyUseCase {
-        public String execute() {
-            return "MyUseCase Test";
-        }
-    }
 }

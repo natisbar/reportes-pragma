@@ -27,7 +27,7 @@ public class DynamoDBTemplateAdapter extends TemplateAdapterOperations<ReporteSo
 
     private final DynamoDbAsyncClient dynamoDbAsyncClient;
     private static final Logger log = LoggerFactory.getLogger(DynamoDBTemplateAdapter.class);
-    private static final String NOMBRE_TABLA = "reportes_solicitudes";
+    public static final String NOMBRE_TABLA = "reportes_solicitudes";
 
     public DynamoDBTemplateAdapter(DynamoDbEnhancedAsyncClient connectionFactory, ObjectMapper mapper, DynamoDbAsyncClient dynamoDbAsyncClient) {
         super(connectionFactory, mapper, d -> mapper.map(d, ReporteSolicitudes.class), NOMBRE_TABLA);

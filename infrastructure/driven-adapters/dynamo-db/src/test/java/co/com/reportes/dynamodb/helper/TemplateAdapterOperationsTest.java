@@ -1,11 +1,14 @@
 package co.com.reportes.dynamodb.helper;
 
 import co.com.reportes.dynamodb.DynamoDBTemplateAdapter;
-import co.com.reportes.dynamodb.ModelEntity;
+import co.com.reportes.dynamodb.ReporteSolicitudesEntity;
+import co.com.reportes.model.solicitud.ReporteSolicitudes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.reactivecommons.utils.ObjectMapper;
 import reactor.test.StepVerifier;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbAsyncTable;
@@ -13,11 +16,17 @@ import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedAsyncClient;
 import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 
+import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
+
+import java.math.BigDecimal;
 import java.util.concurrent.CompletableFuture;
 
+import static co.com.reportes.dynamodb.DynamoDBTemplateAdapter.NOMBRE_TABLA;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+
 
 class TemplateAdapterOperationsTest {
 
@@ -28,39 +37,49 @@ class TemplateAdapterOperationsTest {
     private ObjectMapper mapper;
 
     @Mock
-    private DynamoDbAsyncTable<ModelEntity> customerTable;
+    private DynamoDbAsyncTable<ReporteSolicitudesEntity> customerTable;
 
-    private ModelEntity modelEntity;
+    @Mock
+    private DynamoDbAsyncClient dynamoDbAsyncClient;
+
+    private ReporteSolicitudesEntity modelEntity;
+    private ReporteSolicitudes model;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        when(dynamoDbEnhancedAsyncClient.table("table_name", TableSchema.fromBean(ModelEntity.class)))
+        when(dynamoDbEnhancedAsyncClient.table(NOMBRE_TABLA, TableSchema.fromBean(ReporteSolicitudesEntity.class)))
                 .thenReturn(customerTable);
 
-        modelEntity = new ModelEntity();
+        modelEntity = new ReporteSolicitudesEntity();
         modelEntity.setId("id");
-        modelEntity.setAtr1("atr1");
+        modelEntity.setContador(1L);
+        modelEntity.setMonto(BigDecimal.TEN);
+        model = new ReporteSolicitudes();
+        model.setId("id");
+        model.setContador(1L);
+        model.setMonto(BigDecimal.TEN);
     }
 
     @Test
     void modelEntityPropertiesMustNotBeNull() {
-        ModelEntity modelEntityUnderTest = new ModelEntity("id", "atr1");
+        ReporteSolicitudesEntity modelEntityUnderTest = new ReporteSolicitudesEntity("id", 1L, BigDecimal.TEN);
 
         assertNotNull(modelEntityUnderTest.getId());
-        assertNotNull(modelEntityUnderTest.getAtr1());
+        assertNotNull(modelEntityUnderTest.getContador());
+        assertNotNull(modelEntityUnderTest.getMonto());
     }
 
     @Test
     void testSave() {
-        when(customerTable.putItem(modelEntity)).thenReturn(CompletableFuture.runAsync(()->{}));
-        when(mapper.map(modelEntity, ModelEntity.class)).thenReturn(modelEntity);
+        when(customerTable.putItem(any(ReporteSolicitudesEntity.class))).thenReturn(CompletableFuture.runAsync(()->{}));
+        when(mapper.map(modelEntity, ReporteSolicitudesEntity.class)).thenReturn(modelEntity);
 
         DynamoDBTemplateAdapter dynamoDBTemplateAdapter =
-                new DynamoDBTemplateAdapter(dynamoDbEnhancedAsyncClient, mapper);
+                new DynamoDBTemplateAdapter(dynamoDbEnhancedAsyncClient, mapper, dynamoDbAsyncClient);
 
-        StepVerifier.create(dynamoDBTemplateAdapter.save(modelEntity))
+        StepVerifier.create(dynamoDBTemplateAdapter.save(model))
                 .expectNextCount(1)
                 .verifyComplete();
     }
@@ -72,29 +91,29 @@ class TemplateAdapterOperationsTest {
         when(customerTable.getItem(
                 Key.builder().partitionValue(AttributeValue.builder().s(id).build()).build()))
                 .thenReturn(CompletableFuture.completedFuture(modelEntity));
-        when(mapper.map(modelEntity, Object.class)).thenReturn("value");
+        when(mapper.map(modelEntity, Object.class)).thenReturn(model);
 
         DynamoDBTemplateAdapter dynamoDBTemplateAdapter =
-                new DynamoDBTemplateAdapter(dynamoDbEnhancedAsyncClient, mapper);
+                new DynamoDBTemplateAdapter(dynamoDbEnhancedAsyncClient, mapper, dynamoDbAsyncClient);
 
         StepVerifier.create(dynamoDBTemplateAdapter.getById("id"))
-                .expectNext("value")
+                .expectNext(model)
                 .verifyComplete();
     }
 
     @Test
     void testDelete() {
-        when(mapper.map(modelEntity, ModelEntity.class)).thenReturn(modelEntity);
+        when(mapper.map(modelEntity, ReporteSolicitudesEntity.class)).thenReturn(modelEntity);
         when(mapper.map(modelEntity, Object.class)).thenReturn("value");
 
         when(customerTable.deleteItem(modelEntity))
                 .thenReturn(CompletableFuture.completedFuture(modelEntity));
 
         DynamoDBTemplateAdapter dynamoDBTemplateAdapter =
-                new DynamoDBTemplateAdapter(dynamoDbEnhancedAsyncClient, mapper);
+                new DynamoDBTemplateAdapter(dynamoDbEnhancedAsyncClient, mapper, dynamoDbAsyncClient);
 
-        StepVerifier.create(dynamoDBTemplateAdapter.delete(modelEntity))
-                .expectNext("value")
+        StepVerifier.create(dynamoDBTemplateAdapter.delete(model))
+                .expectNext(model)
                 .verifyComplete();
     }
 }

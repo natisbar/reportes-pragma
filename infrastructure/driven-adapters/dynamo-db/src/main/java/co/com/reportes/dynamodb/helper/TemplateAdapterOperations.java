@@ -46,7 +46,7 @@ public abstract class TemplateAdapterOperations<E, K, V> {
         return Mono.fromFuture(table.getItem(Key.builder()
                         .partitionValue(AttributeValue.builder().s((String) id).build())
                         .build()))
-                .map(res -> toModel(res));
+                .map(this::toModel);
     }
 
     public Mono<E> delete(E model) {
