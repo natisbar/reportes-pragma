@@ -53,32 +53,6 @@ public abstract class TemplateAdapterOperations<E, K, V> {
         return Mono.fromFuture(table.deleteItem(toEntity(model))).map(this::toModel);
     }
 
-    public Mono<List<E>> query(QueryEnhancedRequest queryExpression) {
-        PagePublisher<V> pagePublisher = table.query(queryExpression);
-        return listOfModel(pagePublisher);
-    }
-
-    public Mono<List<E>> queryByIndex(QueryEnhancedRequest queryExpression, String... index) {
-        DynamoDbAsyncIndex<V> queryIndex = index.length > 0 ? table.index(index[0]) : tableByIndex;
-
-        SdkPublisher<Page<V>> pagePublisher = queryIndex.query(queryExpression);
-        return listOfModel(pagePublisher);
-    }
-
-    @Deprecated(forRemoval = true)
-    public Mono<List<E>> scan() {
-        PagePublisher<V> pagePublisher = table.scan();
-        return listOfModel(pagePublisher);
-    }
-
-    private Mono<List<E>> listOfModel(PagePublisher<V> pagePublisher) {
-        return Mono.from(pagePublisher).map(page -> page.items().stream().map(this::toModel).toList());
-    }
-
-    private Mono<List<E>> listOfModel(SdkPublisher<Page<V>> pagePublisher) {
-        return Mono.from(pagePublisher).map(page -> page.items().stream().map(this::toModel).toList());
-    }
-
     protected V toEntity(E model) {
         return mapper.map(model, dataClass);
     }

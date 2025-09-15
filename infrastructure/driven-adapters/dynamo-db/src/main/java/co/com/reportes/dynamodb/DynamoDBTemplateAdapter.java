@@ -9,16 +9,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedAsyncClient;
-import software.amazon.awssdk.enhanced.dynamodb.Key;
-import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional;
-import software.amazon.awssdk.enhanced.dynamodb.model.QueryEnhancedRequest;
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.dynamodb.model.UpdateItemRequest;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -34,22 +30,6 @@ public class DynamoDBTemplateAdapter extends TemplateAdapterOperations<ReporteSo
         this.dynamoDbAsyncClient = dynamoDbAsyncClient;
     }
 
-    public Mono<List<ReporteSolicitudes>> getEntityBySomeKeys(String partitionKey, String sortKey) {
-        QueryEnhancedRequest queryExpression = generateQueryExpression(partitionKey, sortKey);
-        return query(queryExpression);
-    }
-
-    public Mono<List<ReporteSolicitudes>> getEntityBySomeKeysByIndex(String partitionKey, String sortKey) {
-        QueryEnhancedRequest queryExpression = generateQueryExpression(partitionKey, sortKey);
-        return queryByIndex(queryExpression);
-    }
-
-    private QueryEnhancedRequest generateQueryExpression(String partitionKey, String sortKey) {
-        return QueryEnhancedRequest.builder()
-                .queryConditional(QueryConditional.keyEqualTo(Key.builder().partitionValue(partitionKey).build()))
-                .queryConditional(QueryConditional.sortGreaterThanOrEqualTo(Key.builder().sortValue(sortKey).build()))
-                .build();
-    }
 
     @Override
     public Mono<Void> agregarCantidadYMontoPrestamoAprobado(BigDecimal valor) {
